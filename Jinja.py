@@ -1,6 +1,6 @@
 # Building Url dynamically, Variable rule, and Jinja 2 Template engine
 
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request,redirect,url_for
 
 # Jinja 2 template engine
 '''
@@ -54,12 +54,30 @@ def successres(score):
     }
     return render_template("result1.html",results=exp)
 
+# if condition
 @app.route("/successif/<int:score>")
 def successif(score):
     return render_template("result.html",results=score)
    
 # Building URL dynamically
+@app.route("/fail/<int:score>")
+def fail(score):
+    return render_template("result.html",results=score)
 
+@app.route("/submit1",methods=["GET","POST"])
+def submit1():
+    total_score=0
+    if request.method=="POST":
+        science=float(request.form["science"])
+        maths=float(request.form["maths"])
+        c=float(request.form["c"])
+        datascience=float(request.form["datascience"])
+        
+        total_score=(science+maths+c+datascience)/4
+    else:
+        return render_template("getresult.html")
+    
+    return redirect(url_for("successres",score=total_score))
 
 if __name__ == "__main__" :
     app.run(debug = True)
